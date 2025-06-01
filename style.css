@@ -1,0 +1,392 @@
+       /* フォントの読み込み - 古典的な雰囲気 */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        
+        /* リセットCSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* カスタムプロパティ（CSS変数） - 配色の管理 */
+        :root {
+            /* アメジストの紫系統 */
+            --amethyst-deep: #4a148c;
+            --amethyst-main: #7b1fa2;
+            --amethyst-light: #9c27b0;
+            --amethyst-pale: #ce93d8;
+            
+            /* 水瓶座の青系統 */
+            --aquarius-deep: #1a237e;
+            --aquarius-main: #3f51b5;
+            --aquarius-light: #7986cb;
+            
+            /* 錬金術の金属色 */
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --copper: #b87333;
+            
+            /* 背景色 */
+            --bg-dark: #1a1a2e;
+            --bg-medium: #16213e;
+            --bg-light: #0f3460;
+            
+            /* テキスト色 */
+            --text-light: #e8eaf6;
+            --text-medium: #c5cae9;
+            --text-dim: #9fa8da;
+        }
+        
+        /* 全体の基本スタイル */
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 50%, var(--bg-light) 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 背景の装飾要素 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, var(--amethyst-pale)22 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--aquarius-light)22 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, var(--gold)11 0%, transparent 30%);
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        /* ヘッダー */
+        header {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--gold);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .site-title {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 0.5rem;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        .site-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-medium);
+            font-style: italic;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        
+        /* ナビゲーション */
+        nav {
+            background: rgba(22, 33, 62, 0.9);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .nav-item {
+            position: relative;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(45deg, var(--amethyst-main), var(--aquarius-main));
+            border-radius: 25px;
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            animation: slideInLeft 0.8s ease-out;
+        }
+        
+        .nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(123, 31, 162, 0.4);
+            border-color: var(--gold);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(45deg, var(--gold), var(--copper));
+            color: var(--bg-dark);
+        }
+        
+        /* メインコンテンツ */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        /* セクションの共通スタイル */
+        .section {
+            margin-bottom: 3rem;
+            background: rgba(26, 26, 46, 0.6);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid var(--amethyst-pale);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.4s; }
+        .section:nth-child(4) { animation-delay: 0.6s; }
+        
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--amethyst-main), var(--aquarius-main));
+        }
+        
+        /* カードレイアウト */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .card {
+            background: rgba(15, 52, 96, 0.5);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--aquarius-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(123, 31, 162, 0.3);
+            border-color: var(--gold);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--amethyst-light);
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-description {
+            color: var(--text-medium);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        /* プレースホルダー要素 */
+        .placeholder-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, var(--bg-medium), var(--bg-light));
+            border: 2px dashed var(--amethyst-pale);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dim);
+            font-style: italic;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .placeholder-image:hover {
+            border-color: var(--gold);
+            background: linear-gradient(45deg, var(--amethyst-deep), var(--aquarius-deep));
+        }
+        
+        .placeholder-link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(45deg, var(--amethyst-main), var(--aquarius-main));
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            margin: 0.25rem;
+        }
+        
+        .placeholder-link:hover {
+            background: linear-gradient(45deg, var(--gold), var(--copper));
+            color: var(--bg-dark);
+            transform: scale(1.05);
+        }
+        
+        /* 個人情報セクション */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .skill-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .skill-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--amethyst-pale);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .skill-item::before {
+            content: '⭐';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+        }
+        
+        /* アニメーションキーフレーム */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .site-title {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .site-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+            }
+            
+            .nav-item {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* フッター */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: rgba(26, 26, 46, 0.8);
+            border-top: 2px solid var(--gold);
+            margin-top: 3rem;
+            color: var(--text-dim);
+        }
+        
+        .hidden {
+            display: none;
+        }
