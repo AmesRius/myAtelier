@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>錬金術師の工房 - 私の作業記録</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header>
+        <h1 class="site-title">錬金術師の工房</h1>
+        <p class="site-subtitle">～ 創造と発見の記録庫 ～</p>
+    </header>
+    
+    <!-- ナビゲーション -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="nav-item active" data-section="overview">工房概要</a>
+            <a href="#" class="nav-item" data-section="works">作品ギャラリー</a>
+            <a href="#" class="nav-item" data-section="plans">企画書庫</a>
+            <a href="#" class="nav-item" data-section="profile">個人記録</a>
+        </div>
+    </nav>
+    
+    <!-- メインコンテンツ -->
+    <main>
+        <!-- 工房概要セクション -->
+        <section id="overview" class="section">
+            <h2 class="section-title">工房概要</h2>
+            <div class="card">
+                <h3 class="card-title">ようこそ、私の錬金術師の工房へ</h3>
+                <p class="card-description">
+                    この神秘的な工房では、過去に創造したWebページ、練り上げた企画書、そして私自身の成長の軌跡を保管しています。
+                    アメジストの紫光と水瓶座の星々に導かれ、創造と発見の旅を続けてきました。
+                </p>
+                <p class="card-description">
+                    各部屋を探索し、時の流れの中で蓄積された知識と経験をご覧ください。
+                    これらの記録は、未来への新たな創造のための糧となることでしょう。
+                </p>
+            </div>
+        </section>
+        
+        <!-- 作品ギャラリーセクション -->
+        <section id="works" class="section hidden">
+            <h2 class="section-title">作品ギャラリー</h2>
+            <div class="card-grid">
+                <!-- Webページ作品例1 -->
+                <div class="card">
+                    <div class="placeholder-image">
+                        📷 ここに作品のスクリーンショット画像
+                        <!-- <img src="ここに画像のパス" alt="作品タイトル"> -->
+                    </div>
+                    <h3 class="card-title">プロジェクト名1</h3>
+                    <p class="card-description">
+                        作品の概要説明をここに記載します。使用技術、制作期間、特徴などを含めて説明。
+                    </p>
+                    <a href="#" class="placeholder-link">🔗 ここにWebサイトのURL</a>
+                    <a href="#" class="placeholder-link">📹 ここにデモ動画のURL</a>
+                </div>
+                
+                <!-- Webページ作品例2 -->
+                <div class="card">
+                    <div class="placeholder-image">
+                        🎬 ここに作品のデモ動画
+                        <!-- <video controls width="100%">
+                            <source src="ここに動画ファイルのパス" type="video/mp4">
+                        </video> -->
+                    </div>
+                    <h3 class="card-title">プロジェクト名2</h3>
+                    <p class="card-description">
+                        インタラクティブなWebアプリケーション。ユーザー体験を重視した設計と実装の詳細。
+                    </p>
+                    <a href="#" class="placeholder-link">🔗 ここにWebアプリのURL</a>
+                    <a href="#" class="placeholder-link">💻 ここにソースコードのURL</a>
+                </div>
+                
+                <!-- 作品例3 -->
+                <div class="card">
+                    <div class="placeholder-image">
+                        🖼️ ここに作品のスクリーンショット画像
+                        <!-- <img src="ここに画像のパス" alt="作品タイトル"> -->
+                    </div>
+                    <h3 class="card-title">プロジェクト名3</h3>
+                    <p class="card-description">
+                        レスポンシブデザインを採用したWebサイト。モバイルファーストの設計思想で構築。
+                    </p>
+                    <a href="#" class="placeholder-link">🔗 ここにWebサイトのURL</a>
+                    <a href="#" class="placeholder-link">📋 ここに設計書のURL</a>
+                </div>
+
+                <!-- 作品例4 -->
+                <div class="card">
+                    <div class="placeholder-image">
+                        🖼️ ここに作品のスクリーンショット画像
+                        <!-- <img src="ここに画像のパス" alt="作品タイトル"> -->
+                    </div>
+                    <h3 class="card-title">プロジェクト名4</h3>
+                    <p class="card-description">
+                        レスポンシブデザインを採用したWebサイト。モバイルファーストの設計思想で構築。
+                    </p>
+                    <a href="#" class="placeholder-link">🔗 ここにWebサイトのURL</a>
+                    <a href="#" class="placeholder-link">📋 ここに設計書のURL</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 企画書庫セクション -->
+        <section id="plans" class="section hidden">
+            <h2 class="section-title">企画書庫</h2>
+            <div class="card-grid">
+                <!-- 企画書例1 -->
+                <div class="card">
+                    <h3 class="card-title">📜 Webサービス企画書 2024</h3>
+                    <p class="card-description">
+                        新しいWebサービスの企画提案書。ターゲット分析、機能設計、収益モデルなどを包括的に記載。
+                    </p>
+                    <p class="card-description">
+                        <strong>作成日:</strong> 2024年3月<br>
+                        <strong>ページ数:</strong> 25ページ<br>
+                        <strong>ステータス:</strong> 検討中
+                    </p>
+                    <a href="#" class="placeholder-link">📄 ここに企画書PDFファイルのパス</a>
+                </div>
+                
+                <!-- 企画書例2 -->
+                <div class="card">
+                    <h3 class="card-title">📊 マーケティング戦略書</h3>
+                    <p class="card-description">
+                        デジタルマーケティングの戦略立案書。SNS活用、コンテンツマーケティング、KPI設定などを詳述。
+                    </p>
+                    <p class="card-description">
+                        <strong>作成日:</strong> 2024年1月<br>
+                        <strong>ページ数:</strong> 18ページ<br>
+                        <strong>ステータス:</strong> 実行済み
+                    </p>
+                    <a href="#" class="placeholder-link">📄 ここに企画書PDFファイルのパス</a>
+                </div>
+                
+                <!-- 企画書例3 -->
+                <div class="card">
+                    <h3 class="card-title">💡 アイデア提案書</h3>
+                    <p class="card-description">
+                        新機能追加の提案書。ユーザビリティ向上のための機能設計と実装プランを記載。
+                    </p>
+                    <p class="card-description">
+                        <strong>作成日:</strong> 2023年11月<br>
+                        <strong>ページ数:</strong> 12ページ<br>
+                        <strong>ステータス:</strong> 承認待ち
+                    </p>
+                    <a href="#" class="placeholder-link">📄 ここに企画書PDFファイルのパス</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 個人記録セクション -->
+        <section id="profile" class="section hidden">
+            <h2 class="section-title">個人記録</h2>
+            <div class="profile-grid">
+                <!-- 自己紹介カード -->
+                <div class="card">
+                    <h3 class="card-title">🧙‍♂️ 錬金術師プロフィール</h3>
+                    <p class="card-description">
+                        Web技術とデザインを融合させ、ユーザー体験を重視したサービス開発に情熱を注ぐ。
+                        常に新しい技術への探求心を持ち、創造的な解決策を追求している。
+                    </p>
+                    <p class="card-description">
+                        <strong>専門分野:</strong> フロントエンド開発、UI/UXデザイン、企画立案<br>
+                        <strong>興味のある技術:</strong> React, Vue.js, Node.js, Python<br>
+                        <strong>座右の銘:</strong> "創造は破壊から始まる"
+                    </p>
+                </div>
+                
+                <!-- スキルセットカード -->
+                <div class="card">
+                    <h3 class="card-title">🛠️ 技術スキル</h3>
+                    <ul class="skill-list">
+                        <li class="skill-item">HTML5 / CSS3 (上級)</li>
+                        <li class="skill-item">JavaScript (中級)</li>
+                        <li class="skill-item">Responsive Design (上級)</li>
+                        <li class="skill-item">Adobe Creative Suite (中級)</li>
+                        <li class="skill-item">Git / GitHub (中級)</li>
+                        <li class="skill-item">SEO / Analytics (中級)</li>
+                        <li class="skill-item">プロジェクト管理 (中級)</li>
+                    </ul>
+                </div>
+                
+                <!-- 経歴カード -->
+                <div class="card">
+                    <h3 class="card-title">📚 学習・活動履歴</h3>
+                    <div class="card-description">
+                        <p><strong>2024年:</strong> 新しいWebフレームワークの学習開始</p>
+                        <p><strong>2023年:</strong> 個人プロジェクト3件完了</p>
+                        <p><strong>2022年:</strong> UI/UXデザインの体系的学習</p>
+                        <p><strong>2021年:</strong> JavaScript実践スキル向上</p>
+                    </div>
+                </div>
+                
+                <!-- 目標・計画カード -->
+                <div class="card">
+                    <h3 class="card-title">🎯 今後の目標</h3>
+                    <div class="card-description">
+                        <p><strong>短期目標 (6ヶ月):</strong></p>
+                        <ul>
+                            <li>React.jsの実践的な習得</li>
+                            <li>個人プロジェクト2件の完成</li>
+                        </ul>
+                        <p><strong>中期目標 (1年):</strong></p>
+                        <ul>
+                            <li>フルスタック開発スキルの獲得</li>
+                            <li>オープンソースへの貢献開始</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- フッター -->
+    <footer>
+        <p>&copy; 2024 錬金術師の工房. All rights reserved. | Created with ❤️ and ✨ magic</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
