@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AIとの応答記録ツール</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fafafa;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background-color: #4a90e2;
+      color: white;
+      padding: 1em;
+      text-align: center;
+      font-size: 1.2em;
+    }
+
+    #configArea {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      padding: 0.5em 1em;
+      background-color: #fff;
+    }
+
+    #titleInput {
+      width: 100%;
+      padding: 0.5em;
+      font-size: 1em;
+    }
+
+    #aiOptions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      font-size: 0.95em;
+    }
+
+    #roleToggle {
+      display: flex;
+      justify-content: center;
+      padding: 0.5em;
+      background: #fff;
+    }
+
+    .role-button {
+      flex: 1;
+      padding: 0.5em;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+    }
+
+    .active {
+      background-color: #4a90e2;
+      color: white;
+      font-weight: bold;
+    }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1em;
+    }
+
+    .message {
+      max-width: 80%;
+      margin: 0.5em;
+      padding: 0.7em;
+      border-radius: 10px;
+      word-wrap: break-word;
+    }
+
+    .user {
+      margin-left: auto;
+      background-color: #dcf8c6;
+      text-align: right;
+    }
+
+    .ai {
+      margin-right: auto;
+      background-color: #f1f0f0;
+      text-align: left;
+    }
+
+    #inputArea {
+      display: flex;
+      padding: 0.5em;
+      background-color: white;
+      border-top: 1px solid #ccc;
+    }
+
+    #textInput {
+      flex: 1;
+      padding: 0.5em;
+      font-size: 1em;
+    }
+
+    #submitBtn {
+      padding: 0.5em 1em;
+      font-size: 1em;
+      margin-left: 0.5em;
+      cursor: pointer;
+    }
+
+    #exportButtons {
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5em;
+      background-color: white;
+      border-top: 1px solid #ccc;
+    }
+
+    button {
+      font-size: 1em;
+      padding: 0.5em 1em;
+    }
+
+    @media screen and (max-width: 600px) {
+      .message {
+        max-width: 95%;
+        font-size: 0.9em;
+      }
+
+      #aiOptions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>AIとの応答記録ツール</header>
+
+  <div id="configArea">
+    <input type="text" id="titleInput" placeholder="タイトルを入力..." />
+    <div id="aiOptions">
+      <label><input type="radio" name="ai" value="ChatGPT" checked> ChatGPT</label>
+      <label><input type="radio" name="ai" value="Gemini"> Gemini</label>
+      <label><input type="radio" name="ai" value="Claude"> Claude</label>
+      <label><input type="radio" name="ai" value="Perplexity"> Perplexity</label>
+    </div>
+  </div>
+
+  <div id="roleToggle">
+    <button id="userBtn" class="role-button active">人間</button>
+    <button id="aiBtn" class="role-button">AI</button>
+  </div>
+
+  <div id="chat"></div>
+
+  <div id="inputArea">
+    <input type="text" id="textInput" placeholder="メッセージを入力..." />
+    <button id="submitBtn">送信</button>
+  </div>
+
+  <div id="exportButtons">
+    <button onclick="exportChat('json')">JSONで保存</button>
+    <button onclick="exportChat('txt')">TXTで保存</button>
+  </div>
+
+  <script>
+    let currentRole = 'user';
+    const chatHistory = [];
+
+    const userBtn = document.getElementById('userBtn');
+    const aiBtn = document.getElementById('aiBtn');
+    const chat = document.getElementById('chat');
+    const textInput = document.getElementById('textInput');
+    const titleInput = document.getElementById('titleInput');
+
+    userBtn.addEventListener('click', () => setRole('user'));
+    aiBtn.addEventListener('click', () => setRole('ai'));
+
+    function setRole(role) {
+      currentRole = role;
+      userBtn.classList.toggle('active', role === 'user');
+      aiBtn.classList.toggle('active', role === 'ai');
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const text = textInput.value.trim();
+      if (text === '') return;
+      addMessage(text);
+      textInput.value = '';
+      setRole(currentRole === 'user' ? 'ai' : 'user');
+    });
+
+    function addMessage(text) {
+      const message = {
+        role: currentRole,
+        text: text,
+        timestamp: new Date().toISOString()
+      };
+      chatHistory.push(message);
+      renderMessage(message);
+    }
+
+    function renderMessage(message) {
+      const div = document.createElement('div');
+      div.className = `message ${message.role}`;
+      div.textContent = message.text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function getSelectedAI() {
+      const selected = document.querySelector('input[name="ai"]:checked');
+      return selected ? selected.value : 'UnknownAI';
+    }
+
+    function getTodayDateString() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}${m}${d}`;
+    }
+
+    function sanitizeFileName(name) {
+      return name.replace(/[\\/:*?"<>|]/g, "_");
+    }
+
+    function exportChat(format = 'json') {
+      let dataStr;
+      if (format === 'json') {
+        dataStr = JSON.stringify(chatHistory, null, 2);
+      } else {
+        dataStr = chatHistory.map(m => `[${m.role}] ${m.text}`).join('\n');
+      }
+
+      const ai = getSelectedAI();
+      const date = getTodayDateString();
+      const title = sanitizeFileName(titleInput.value.trim() || 'untitled');
+      const filename = `${date}_${ai}_${title}.${format}`;
+
+      const blob = new Blob([dataStr], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>
