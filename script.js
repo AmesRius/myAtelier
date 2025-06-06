@@ -64,13 +64,13 @@
             });
             
             // プレースホルダーリンクのクリック時の説明
-            const placeholderLinks = document.querySelectorAll('.placeholder-link');
-            placeholderLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    alert('このリンクは実際のファイルやURLを設定後に機能します。\n現在はプレースホルダーとして表示されています。');
-                });
-            });
+            //const placeholderLinks = document.querySelectorAll('.placeholder-link');
+            //placeholderLinks.forEach(link => {
+            //    link.addEventListener('click', function(e) {
+            //        e.preventDefault();
+            //        alert('このリンクは実際のファイルやURLを設定後に機能します。\n現在はプレースホルダーとして表示されています。');
+            //    });
+            //});
             
             // 画像プレースホルダーのクリック時の説明
             const placeholderImages = document.querySelectorAll('.placeholder-image');
