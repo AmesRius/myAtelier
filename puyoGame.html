@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍬 キャンディーボックス 🍬</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+        
+        * {
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '🍭🍬🍭🍬🍭🍬🍭🍬';
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            opacity: 0.4;
+            pointer-events: none;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        .game-container {
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%);
+            padding: 35px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+            border: 4px solid #ff69b4;
+            display: none;
+            position: relative;
+        }
+        
+        .game-container::before {
+            content: '✨';
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            font-size: 40px;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        .game-container.active {
+            display: block;
+        }
+        
+        .game-layout {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+        }
+        
+        .main-area {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.2);
+        }
+        
+        .score {
+            color: #ff1493;
+            font-size: 32px;
+        }
+        
+        canvas {
+            border: 5px solid #ff69b4;
+            border-radius: 20px;
+            display: block;
+            background: linear-gradient(180deg, #fff 0%, #fffafc 100%);
+            box-shadow: inset 0 0 20px rgba(255, 182, 193, 0.3),
+                        0 10px 30px rgba(255, 105, 180, 0.2);
+        }
+        
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+            color: #ff69b4;
+            line-height: 2;
+            font-weight: 700;
+            font-size: 14px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            border: 3px solid #ffb6c1;
+        }
+        
+        .next-panel {
+            background: linear-gradient(135deg, #fffafc 0%, #fff0f5 100%);
+            border: 4px solid #ffb6c1;
+            border-radius: 20px;
+            padding: 20px;
+            min-width: 130px;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+        }
+        
+        .next-title {
+            text-align: center;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        
+        .next-title::before {
+            content: '🍬 ';
+        }
+        
+        .next-title::after {
+            content: ' 🍬';
+        }
+        
+        .next-item {
+            margin-bottom: 20px;
+            padding: 12px;
+            background: white;
+            border-radius: 15px;
+            border: 3px solid #ffc0cb;
+            box-shadow: 0 5px 15px rgba(255, 182, 193, 0.2);
+            transition: transform 0.2s;
+        }
+        
+        .next-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .next-item canvas {
+            border: none;
+            background: white;
+            box-shadow: none;
+        }
+        
+        .next-label {
+            text-align: center;
+            font-size: 13px;
+            color: #ff69b4;
+            margin-top: 8px;
+            font-weight: 700;
+        }
+        
+        .game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            display: none;
+            box-shadow: 0 20px 60px rgba(255, 20, 147, 0.5);
+            border: 5px solid white;
+            z-index: 1000;
+        }
+        
+        .game-over::before {
+            content: '💔';
+            font-size: 60px;
+            display: block;
+            margin-bottom: 10px;
+            animation: heartbeat 1s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .game-over h2 {
+            margin: 0 0 20px 0;
+            font-size: 40px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .game-over button {
+            background: white;
+            color: #ff1493;
+            border: none;
+            padding: 18px 45px;
+            font-size: 20px;
+            font-weight: 800;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+        
+        .game-over button:hover {
+            background: #fffafc;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .settings-screen {
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%);
+            padding: 45px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+            border: 5px solid #ff69b4;
+            max-width: 550px;
+            position: relative;
+        }
+        
+        .settings-screen::before,
+        .settings-screen::after {
+            content: '🍭';
+            position: absolute;
+            font-size: 50px;
+            animation: rotate 4s linear infinite;
+        }
+        
+        .settings-screen::before {
+            top: -20px;
+            left: -20px;
+        }
+        
+        .settings-screen::after {
+            bottom: -20px;
+            right: -20px;
+            animation-delay: -2s;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .settings-screen.hidden {
+            display: none;
+        }
+        
+        .settings-title {
+            text-align: center;
+            font-size: 38px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff69b4, #ff1493, #ff69b4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 35px;
+        }
+        
+        .settings-title::before {
+            content: '🍬 ';
+        }
+        
+        .settings-title::after {
+            content: ' 🍬';
+        }
+        
+        .color-settings {
+            margin-bottom: 35px;
+        }
+        
+        .color-settings h3 {
+            color: #ff1493;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            border: 3px solid #ffb6c1;
+        }
+        
+        .color-option {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 4px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-option::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 25%;
+            width: 30%;
+            height: 30%;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .color-option.selected {
+            border-color: #ff1493;
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+            animation: pulse 0.5s ease-out;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .color-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 30px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .color-option.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .color-option.disabled:hover {
+            transform: none;
+        }
+        
+        .color-count {
+            text-align: center;
+            color: #ff69b4;
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            background: white;
+            padding: 10px;
+            border-radius: 15px;
+            border: 2px solid #ffb6c1;
+        }
+        
+        .start-button {
+            width: 100%;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            padding: 25px;
+            font-size: 26px;
+            font-weight: 800;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.3);
+            border: 4px solid white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .start-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .start-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 20, 147, 0.5);
+        }
+        
+        .start-button:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .start-button span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .start-button:not(:disabled)::after {
+            content: ' 🍬';
+        }
+        
+        .mobile-controls {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%);
+            border-radius: 20px;
+            border: 3px solid #ffb6c1;
+        }
+        
+        @media (max-width: 768px), (pointer: coarse) {
+            .mobile-controls {
+                display: block;
+            }
+            
+            .controls {
+                display: none;
+            }
+            
+            .game-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .next-panel {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .game-container {
+                padding: 20px;
+            }
+        }
+        
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 80px);
+            grid-template-rows: repeat(3, 80px);
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .control-btn {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            border: 4px solid white;
+            border-radius: 15px;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+            transition: all 0.1s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 20, 147, 0.4);
+        }
+        
+        .control-btn.disabled {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .btn-up {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .btn-left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .btn-down {
+            grid-column: 2;
+            grid-row: 2;
+        }
+        
+        .btn-right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        
+        .rotate-btn {
+            width: 100%;
+            max-width: 250px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a8a0 100%);
+            border: 4px solid white;
+            border-radius: 15px;
+            color: white;
+            font-size: 20px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+            transition: all 0.1s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .rotate-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(78, 205, 196, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-screen" id="settingsScreen">
+        <div class="settings-title">キャンディーボックス</div>
+        <div class="color-settings">
+            <h3>✨ 飴玉の色を選んでね ✨<br><small>(2〜5色)</small></h3>
+            <div class="color-grid" id="colorGrid"></div>
+            <div class="color-count" id="colorCount">選択中: 0色</div>
+        </div>
+        <button class="start-button" id="startButton" disabled><span>ゲームスタート</span></button>
+    </div>
+
+    <div class="game-container" id="gameContainer">
+        <div class="game-layout">
+            <div class="main-area">
+                <div class="info">
+                    🍭 スコア: <span class="score" id="score">0</span> 🍭
+                </div>
+                <canvas id="gameCanvas" width="300" height="600"></canvas>
+                <div class="controls">
+                    ← → 移動<br>
+                    ↓ 高速落下<br>
+                    ↑ / スペース 回転
+                </div>
+                <div class="mobile-controls">
+                    <div class="control-grid">
+                        <button class="control-btn btn-up" id="btnUp">↑</button>
+                        <button class="control-btn btn-left" id="btnLeft">←</button>
+                        <button class="control-btn btn-down" id="btnDown">↓</button>
+                        <button class="control-btn btn-right" id="btnRight">→</button>
+                    </div>
+                    <button class="rotate-btn" id="btnRotate">🔄 回転</button>
+                </div>
+            </div>
+            <div class="next-panel">
+                <div class="next-title">NEXT</div>
+                <div class="next-item">
+                    <canvas id="next1" width="100" height="100"></canvas>
+                    <div class="next-label">1番目</div>
+                </div>
+                <div class="next-item">
+                    <canvas id="next2" width="100" height="100"></canvas>
+                    <div class="next-label">2番目</div>
+                </div>
+                <div class="next-item">
+                    <canvas id="next3" width="100" height="100"></canvas>
+                    <div class="next-label">3番目</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="game-over" id="gameOver">
+        <h2>ゲームオーバー</h2>
+        <div style="font-size: 24px; margin: 20px 0;">最終スコア: <span id="finalScore" style="font-weight: 800; font-size: 32px;">0</span></div>
+        <button onclick="backToSettings()">もう一度遊ぶ</button>
+    </div>
+
+    <script>
+        const ALL_COLORS = [
+            '#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#a8e6cf',
+            '#ff8787', '#74b9ff', '#fd79a8', '#fdcb6e', '#6c5ce7'
+        ];
+        
+        let selectedColors = [];
+        let COLORS = [];
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const gameOverEl = document.getElementById('gameOver');
+        const finalScoreEl = document.getElementById('finalScore');
+        const settingsScreen = document.getElementById('settingsScreen');
+        const gameContainer = document.getElementById('gameContainer');
+        const colorGrid = document.getElementById('colorGrid');
+        const colorCount = document.getElementById('colorCount');
+        const startButton = document.getElementById('startButton');
+
+        const nextCanvases = [
+            document.getElementById('next1'),
+            document.getElementById('next2'),
+            document.getElementById('next3')
+        ];
+        const nextContexts = nextCanvases.map(c => c.getContext('2d'));
+
+        const COLS = 6;
+        const ROWS = 12;
+        const CELL_SIZE = 50;
+        const NEXT_CELL_SIZE = 40;
+
+        let board = [];
+        let score = 0;
+        let gameOver = false;
+        let currentPair = null;
+        let nextPairs = [];
+        let fallSpeed = 500;
+        let lastFallTime = 0;
+        let fastFall = false;
+
+        function initSettings() {
+            colorGrid.innerHTML = '';
+            ALL_COLORS.forEach((color, index) => {
+                const div = document.createElement('div');
+                div.className = 'color-option';
+                div.style.backgroundColor = color;
+                div.dataset.index = index;
+                div.addEventListener('click', () => toggleColor(index, div));
+                colorGrid.appendChild(div);
+            });
+        }
+
+        function toggleColor(index, element) {
+            const colorIndex = selectedColors.indexOf(index);
+            if (colorIndex > -1) {
+                selectedColors.splice(colorIndex, 1);
+                element.classList.remove('selected');
+            } else {
+                if (selectedColors.length < 5) {
+                    selectedColors.push(index);
+                    element.classList.add('selected');
+                }
+            }
+            updateColorCount();
+        }
+
+        function updateColorCount() {
+            colorCount.textContent = `選択中: ${selectedColors.length}色`;
+            startButton.disabled = selectedColors.length < 2;
+            
+            const options = document.querySelectorAll('.color-option');
+            options.forEach((opt, idx) => {
+                if (selectedColors.length >= 5 && !selectedColors.includes(idx)) {
+                    opt.classList.add('disabled');
+                } else if (!opt.classList.contains('selected')) {
+                    opt.classList.remove('disabled');
+                }
+            });
+        }
+
+        startButton.addEventListener('click', () => {
+            COLORS = selectedColors.map(i => ALL_COLORS[i]);
+            settingsScreen.classList.add('hidden');
+            gameContainer.classList.add('active');
+            init();
+        });
+
+        function backToSettings() {
+            gameOverEl.style.display = 'none';
+            gameContainer.classList.remove('active');
+            settingsScreen.classList.remove('hidden');
+        }
+
+        function init() {
+            board = Array(ROWS).fill().map(() => Array(COLS).fill(0));
+            score = 0;
+            gameOver = false;
+            scoreEl.textContent = score;
+            gameOverEl.style.display = 'none';
+            
+            nextPairs = [];
+            for (let i = 0; i < 4; i++) {
+                nextPairs.push(generatePairData());
+            }
+            
+            currentPair = createPairFromData(nextPairs.shift());
+            nextPairs.push(generatePairData());
+            
+            lastFallTime = Date.now();
+            gameLoop();
+        }
+
+        function generatePairData() {
+            return {
+                color1: Math.floor(Math.random() * COLORS.length) + 1,
+                color2: Math.floor(Math.random() * COLORS.length) + 1
+            };
+        }
+
+        function createPairFromData(data) {
+            const col = Math.floor(COLS / 2) - 1;
+            return {
+                main: { row: 0, col: col, color: data.color1 },
+                sub: { row: -1, col: col, color: data.color2 },
+                rotation: 0
+            };
+        }
+
+        function spawnPair() {
+            const col = Math.floor(COLS / 2) - 1;
+            currentPair = createPairFromData(nextPairs.shift());
+            nextPairs.push(generatePairData());
+
+            if (board[0][col] !== 0) {
+                endGame();
+            }
+        }
+
+        function drawNext() {
+            nextPairs.slice(0, 3).forEach((pair, index) => {
+                const nctx = nextContexts[index];
+                const ncanvas = nextCanvases[index];
+                
+                nctx.fillStyle = 'white';
+                nctx.fillRect(0, 0, ncanvas.width, ncanvas.height);
+                
+                drawCandyOnCanvas(nctx, 50, 25, COLORS[pair.color2 - 1], NEXT_CELL_SIZE);
+                drawCandyOnCanvas(nctx, 50, 75, COLORS[pair.color1 - 1], NEXT_CELL_SIZE);
+            });
+        }
+
+        function drawCandyOnCanvas(context, x, y, color, size) {
+            const radius = size / 2 - 3;
+            
+            context.fillStyle = color;
+            context.beginPath();
+            context.arc(x, y, radius, 0, Math.PI * 2);
+            context.fill();
+
+            context.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            context.beginPath();
+            context.arc(x - radius / 3, y - radius / 3, radius / 2.5, 0, Math.PI * 2);
+            context.fill();
+            
+            context.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            context.lineWidth = 2;
+            context.beginPath();
+            context.arc(x, y, radius - 3, 0, Math.PI * 2);
+            context.stroke();
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(255, 250, 252, 0.95)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let row = 0; row < ROWS; row++) {
+                for (let col = 0; col < COLS; col++) {
+                    if (board[row][col] > 0) {
+                        drawCandy(col, row, COLORS[board[row][col] - 1]);
+                    }
+                }
+            }
+
+            if (currentPair) {
+                if (currentPair.sub.row >= 0) {
+                    drawCandy(currentPair.sub.col, currentPair.sub.row, COLORS[currentPair.sub.color - 1]);
+                }
+                drawCandy(currentPair.main.col, currentPair.main.row, COLORS[currentPair.main.color - 1]);
+            }
+
+            drawNext();
+        }
+
+        function drawCandy(col, row, color) {
+            const x = col * CELL_SIZE;
+            const y = row * CELL_SIZE;
+            const radius = CELL_SIZE / 2 - 3;
+            const centerX = x + CELL_SIZE / 2;
+            const centerY = y + CELL_SIZE / 2;
+
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.arc(centerX - radius / 3, centerY - radius / 3, radius / 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius - 3, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        function movePair(dx) {
+            const newMainCol = currentPair.main.col + dx;
+            const newSubCol = currentPair.sub.col + dx;
+
+            if (newMainCol >= 0 && newMainCol < COLS && newSubCol >= 0 && newSubCol < COLS) {
+                if (currentPair.main.row < ROWS && board[currentPair.main.row][newMainCol] === 0) {
+                    if (currentPair.sub.row < 0 || (currentPair.sub.row < ROWS && board[currentPair.sub.row][newSubCol] === 0)) {
+                        currentPair.main.col = newMainCol;
+                        currentPair.sub.col = newSubCol;
+                    }
+                }
+            }
+        }
+
+        function rotatePair() {
+            const rotations = [
+                { row: -1, col: 0 },
+                { row: 0, col: 1 },
+                { row: 1, col: 0 },
+                { row: 0, col: -1 }
+            ];
+
+            const nextRotation = (currentPair.rotation + 1) % 4;
+            const offset = rotations[nextRotation];
+            const newSubRow = currentPair.main.row + offset.row;
+            const newSubCol = currentPair.main.col + offset.col;
+
+            if (newSubCol >= 0 && newSubCol < COLS && newSubRow >= -1) {
+                if (newSubRow < 0 || (newSubRow < ROWS && board[newSubRow][newSubCol] === 0)) {
+                    currentPair.sub.row = newSubRow;
+                    currentPair.sub.col = newSubCol;
+                    currentPair.rotation = nextRotation;
+                }
+            }
+        }
+
+        function fall() {
+            const newMainRow = currentPair.main.row + 1;
+            const newSubRow = currentPair.sub.row + 1;
+
+            if (newMainRow >= ROWS || board[newMainRow][currentPair.main.col] !== 0 ||
+                (currentPair.sub.row >= 0 && (newSubRow >= ROWS || board[newSubRow][currentPair.sub.col] !== 0))) {
+                
+                board[currentPair.main.row][currentPair.main.col] = currentPair.main.color;
+                if (currentPair.sub.row >= 0) {
+                    board[currentPair.sub.row][currentPair.sub.col] = currentPair.sub.color;
+                }
+
+                checkChains();
+                spawnPair();
+            } else {
+                currentPair.main.row = newMainRow;
+                currentPair.sub.row = newSubRow;
+            }
+        }
+
+        function checkChains() {
+            let chainCount = 0;
+            let hasChain = true;
+
+            while (hasChain) {
+                hasChain = false;
+                const visited = Array(ROWS).fill().map(() => Array(COLS).fill(false));
+                const toRemove = [];
+
+                for (let row = 0; row < ROWS; row++) {
+                    for (let col = 0; col < COLS; col++) {
+                        if (board[row][col] > 0 && !visited[row][col]) {
+                            const connected = findConnected(row, col, board[row][col], visited);
+                            if (connected.length >= 4) {
+                                toRemove.push(...connected);
+                                hasChain = true;
+                            }
+                        }
+                    }
+                }
+
+                if (hasChain) {
+                    chainCount++;
+                    toRemove.forEach(({ row, col }) => {
+                        board[row][col] = 0;
+                    });
+                    score += toRemove.length * 10 * chainCount;
+                    scoreEl.textContent = score;
+                    applyGravity();
+                }
+            }
+        }
+
+        function findConnected(row, col, color, visited) {
+            const stack = [{ row, col }];
+            const connected = [];
+
+            while (stack.length > 0) {
+                const { row: r, col: c } = stack.pop();
+                
+                if (r < 0 || r >= ROWS || c < 0 || c >= COLS || visited[r][c] || board[r][c] !== color) {
+                    continue;
+                }
+
+                visited[r][c] = true;
+                connected.push({ row: r, col: c });
+
+                stack.push({ row: r - 1, col: c });
+                stack.push({ row: r + 1, col: c });
+                stack.push({ row: r, col: c - 1 });
+                stack.push({ row: r, col: c + 1 });
+            }
+
+            return connected;
+        }
+
+        function applyGravity() {
+            for (let col = 0; col < COLS; col++) {
+                let writeRow = ROWS - 1;
+                for (let row = ROWS - 1; row >= 0; row--) {
+                    if (board[row][col] > 0) {
+                        board[writeRow][col] = board[row][col];
+                        if (writeRow !== row) {
+                            board[row][col] = 0;
+                        }
+                        writeRow--;
+                    }
+                }
+            }
+        }
+
+        function endGame() {
+            gameOver = true;
+            finalScoreEl.textContent = score;
+            gameOverEl.style.display = 'block';
+        }
+
+        function gameLoop() {
+            if (gameOver) return;
+
+            const now = Date.now();
+            const speed = fastFall ? 50 : fallSpeed;
+
+            if (now - lastFallTime > speed) {
+                fall();
+                lastFallTime = now;
+            }
+
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (gameOver) return;
+
+            switch(e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    movePair(-1);
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    movePair(1);
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    fastFall = true;
+                    break;
+                case 'ArrowUp':
+                case ' ':
+                    e.preventDefault();
+                    rotatePair();
+                    break;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowDown') {
+                fastFall = false;
+            }
+        });
+
+        // モバイルコントロール
+        const btnLeft = document.getElementById('btnLeft');
+        const btnRight = document.getElementById('btnRight');
+        const btnDown = document.getElementById('btnDown');
+        const btnUp = document.getElementById('btnUp');
+        const btnRotate = document.getElementById('btnRotate');
+
+        btnLeft.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (!gameOver) movePair(-1);
+        });
+
+        btnRight.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (!gameOver) movePair(1);
+        });
+
+        btnDown.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (!gameOver) fastFall = true;
+        });
+
+        btnDown.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            fastFall = false;
+        });
+
+        btnUp.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (!gameOver) rotatePair();
+        });
+
+        btnRotate.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (!gameOver) rotatePair();
+        });
+
+        // マウスクリックにも対応
+        btnLeft.addEventListener('click', () => {
+            if (!gameOver) movePair(-1);
+        });
+
+        btnRight.addEventListener('click', () => {
+            if (!gameOver) movePair(1);
+        });
+
+        btnDown.addEventListener('mousedown', () => {
+            if (!gameOver) fastFall = true;
+        });
+
+        btnDown.addEventListener('mouseup', () => {
+            fastFall = false;
+        });
+
+        btnUp.addEventListener('click', () => {
+            if (!gameOver) rotatePair();
+        });
+
+        btnRotate.addEventListener('click', () => {
+            if (!gameOver) rotatePair();
+        });
+
+        initSettings();
+    </script>
+</body>
+</html>
