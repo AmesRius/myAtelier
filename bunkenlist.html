@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>参考文献ソートツール</title>
+    <!-- Tailwind CSS CDNをロード -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* カスタムスクロールバー（オプション） */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background-color: #6366f1; /* Indigo 500 */
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #e0e7ff; /* Indigo 100 */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans JP', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#4f46e5', // Indigo 600
+                        'secondary': '#6366f1', // Indigo 500
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 sm:p-8 font-sans">
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-2">
+                論文・レポート用 参考文献ソートツール
+            </h1>
+            <p class="text-gray-500">日本語の五十音順またはアルファベット順を選択できます。</p>
+        </header>
+
+        <div class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-gray-100">
+            <!-- 説明ボックス (更新) -->
+            <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 mb-4 rounded-lg">
+                <p class="font-bold text-lg mb-1">【重要】読み仮名入力の注意点</p>
+                <ul class="list-disc list-inside text-sm space-y-1">
+                    <li>日本語の文献は、行頭に[ヨミガナ]を付けてください。</li>
+                    <li>五十音順でソートする場合：読み仮名にはカタカナを使用してください。（例：[イシモト]）</li>
+                    <li>アルファベット順でソートする場合：読み仮名にはローマ字を使用してください。（例: [ISHIMOTO]）</li>
+                    <li>英字文献（Smith, J.など）はフリガナ不要です。</li>
+                </ul>
+            </div>
+            <div class="bg-indigo-50 border-l-4 border-primary text-indigo-800 p-4 mb-6 rounded-lg">
+                <p class="font-medium">基本操作:</p>
+                <ul class="list-disc list-inside text-sm mt-1 space-y-1">
+                    <li>1行につき1つの参考文献をAPA形式で入力エリアに貼り付けてください。</li>
+                    <li>ソート方法を選択し、「並び替え」を実行してください。</li>
+                    <li>ソート結果では読み仮名は自動で削除されます。</li>
+                </ul>
+            </div>
+            
+            <!-- ソート方法選択ドロップダウンの追加 -->
+            <div class="mb-6">
+                <label for="sort-method" class="block text-lg font-semibold text-gray-700 mb-2">
+                    ソート方法を選択
+                </label>
+                <select id="sort-method" class="w-full p-3 border-2 border-indigo-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150 shadow-sm bg-white text-gray-800">
+                    <option value="ja">五十音順 (日本語: カタカナのフリガナでソート)</option>
+                    <option value="en">アルファベット順 (日本語: ローマ字の読み仮名でソート)</option>
+                </select>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row lg:space-x-6 space-y-6 lg:space-y-0">
+                
+                <!-- 入力エリア -->
+                <div class="flex-1">
+                    <label for="input-references" class="block text-lg font-semibold text-gray-700 mb-2">
+                        1. 参考文献リストを入力
+                    </label>
+                    <textarea id="input-references" rows="12" class="w-full p-3 border-2 border-indigo-300 rounded-lg focus:ring-primary focus:border-primary transition duration-150 shadow-inner" placeholder="例:&#10;[ヤマダ]山田 花子. (2022). 研究者の倫理. 学会誌C.&#10;[TANAKA]田中 太郎. (2020). 論文作成法. 出版社A.&#10;Smith, J. (2018). Advanced Writing. Journal B."></textarea>
+                </div>
+
+                <!-- 出力エリア -->
+                <div class="flex-1">
+                    <label for="output-references" class="block text-lg font-semibold text-gray-700 mb-2">
+                        3. ソートされたリスト
+                    </label>
+                    <textarea id="output-references" rows="12" readonly class="w-full p-3 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-800 resize-none shadow-inner" placeholder="ここにソート結果が表示されます... (フリガナは自動削除されます)"></textarea>
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-6">
+                <button onclick="sortReferences()" class="flex-1 sm:flex-grow-0 sm:w-64 py-3 px-6 text-lg font-bold text-white bg-primary hover:bg-indigo-700 rounded-full shadow-lg transform transition duration-200 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+                    2. 並び替えを実行
+                </button>
+                <button id="copy-button" onclick="copyToClipboard()" class="flex-1 sm:flex-grow-0 sm:w-64 py-3 px-6 text-lg font-bold text-primary bg-indigo-100 hover:bg-indigo-200 rounded-full shadow-md transform transition duration-200 hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-opacity-50">
+                    結果をコピー
+                </button>
+            </div>
+            
+            <!-- メッセージ表示エリア -->
+            <div id="message-box" class="mt-6 text-center text-sm font-medium h-6"></div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * 参考文献リストを取得し、フリガナをキーとしてソートして出力エリアに表示します。
+         */
+        function sortReferences() {
+            const inputEl = document.getElementById('input-references');
+            const outputEl = document.getElementById('output-references');
+            const messageEl = document.getElementById('message-box');
+            const sortMethod = document.getElementById('sort-method').value; // 'ja' or 'en'
+            
+            const rawText = inputEl.value;
+
+            // 1. テキストを行ごとに分割し、空行を削除
+            let references = rawText.split('\n')
+                                    .map(line => line.trim())
+                                    .filter(line => line.length > 0);
+
+            if (references.length === 0) {
+                showMessage('入力エリアに参考文献がありません。', 'error');
+                outputEl.value = '';
+                return;
+            }
+
+            // 2. ソートキーを抽出
+            let processedReferences = references.map(line => {
+                let key = line;
+                let original = line;
+                
+                // 行頭の [フリガナ] パターンを検出する正規表現
+                // 例: [イシモト]石本雄真...
+                const match = line.match(/^\[(.+?)\]\s*(.*)$/);
+                
+                if (match) {
+                    // フリガナ/ローマ字が見つかった場合
+                    // keyとして使用する部分
+                    const sortBase = match[1].toUpperCase();
+                    // keyは [読み仮名] + 残りの文献データ となる
+                    key = sortBase + match[2]; 
+                    // originalはフリガナを削除した部分 (出力として使用)
+                    original = match[2].trim(); 
+                }
+                
+                return {
+                    original: original,
+                    key: key
+                };
+            });
+
+            // 3. 辞書順でソート（選択されたロケールでソートを切り替える）
+            // sortMethodが 'ja' なら日本語の五十音順、'en' ならアルファベット順になります。
+            processedReferences.sort((a, b) => a.key.localeCompare(b.key, sortMethod, { sensitivity: 'base' }));
+
+            // 4. ソートされたリストを結合 (originalフィールドを使用するためフリガナは削除される)
+            const sortedText = processedReferences.map(item => item.original).join('\n');
+
+            // 5. 結果を出力エリアに表示
+            outputEl.value = sortedText;
+            
+            const sortMessage = sortMethod === 'ja' 
+                                ? '五十音順に並び替えられました。' 
+                                : 'アルファベット順に並び替えられました。';
+            
+            showMessage(`ソートが完了しました。${references.length}件の参考文献が${sortMessage}`, 'success');
+        }
+
+        /**
+         * ソートされたテキストをクリップボードにコピーします。
+         */
+        function copyToClipboard() {
+            const outputEl = document.getElementById('output-references');
+            const messageEl = document.getElementById('message-box');
+            
+            if (outputEl.value.trim() === '') {
+                showMessage('コピーするソート結果がありません。', 'error');
+                return;
+            }
+
+            // クリップボードAPIを使用
+            navigator.clipboard.writeText(outputEl.value)
+                .then(() => {
+                    showMessage('ソート結果をクリップボードにコピーしました！', 'success');
+                })
+                .catch(err => {
+                    // Fallback for environments where clipboard API is restricted
+                    outputEl.select();
+                    try {
+                        document.execCommand('copy');
+                        showMessage('ソート結果をクリップボードにコピーしました！', 'success');
+                    } catch (e) {
+                        console.error('Copy failed:', e);
+                        showMessage('コピーに失敗しました。手動でコピーしてください。', 'error');
+                    }
+                });
+        }
+        
+        /**
+         * ユーザーメッセージを表示します。
+         */
+        function showMessage(text, type = 'info') {
+            const messageEl = document.getElementById('message-box');
+            messageEl.textContent = text;
+            
+            // クラスをリセット
+            messageEl.className = 'mt-6 text-center text-sm font-medium h-6';
+
+            if (type === 'success') {
+                messageEl.classList.add('text-green-600', 'font-semibold');
+            } else if (type === 'error') {
+                messageEl.classList.add('text-red-600', 'font-semibold');
+            } else {
+                messageEl.classList.add('text-gray-500');
+            }
+
+            // 3秒後にメッセージをクリア
+            setTimeout(() => {
+                if (messageEl.textContent === text) {
+                     messageEl.textContent = '';
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
